@@ -6,7 +6,9 @@ function App() {
   const [markdownContent, setMarkdownContent] = useState('');
 
   useEffect(() => {
-    fetch('/collapse.md')
+    // Get the base URL from the homepage in package.json
+    const baseUrl = process.env.PUBLIC_URL || '';
+    fetch(`${baseUrl}/collapse.md`)
       .then(response => response.text())
       .then(content => setMarkdownContent(content))
       .catch(error => console.error('Error loading markdown:', error));

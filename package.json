@@ -2,7 +2,7 @@
   "name": "collapse-timeline",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://harry-optimised.github.io/collapse-timeline",
+  "homepage": "https://harryf.github.io/collapse-timeline",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
