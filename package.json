@@ -13,9 +13,10 @@
     "react-vertical-timeline-component": "^3.6.0"
   },
   "scripts": {
-    "predeploy": "npm run build",
+    "predeploy": "cp collapse.md public/collapse.md && npm run build",
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
+    "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
