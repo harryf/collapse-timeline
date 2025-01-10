@@ -89,6 +89,7 @@ const parseMarkdown = (markdown) => {
   const lines = cleanMarkdown.split('\n');
   let timelineData = {
     mainTitle: '',
+    dateRange: '',
     sections: []
   };
 
@@ -131,7 +132,11 @@ const parseMarkdown = (markdown) => {
 
     // Main title (H1)
     if (isHeading1) {
-      timelineData.mainTitle = trimmed.replace(/^#\s*/, '').trim();
+      const titleParts = trimmed.substring(2).split(':');
+      timelineData.mainTitle = titleParts[0].trim();
+      if (titleParts[1]) {
+        timelineData.dateRange = titleParts[1].trim();
+      }
       console.log(`📑 Line ${lineNumber} - Main Title:`, timelineData.mainTitle);
     }
     // Section (H2)
@@ -184,6 +189,7 @@ const parseMarkdown = (markdown) => {
   // Log final structure statistics
   const stats = {
     mainTitle: timelineData.mainTitle,
+    dateRange: timelineData.dateRange,
     sectionCount: timelineData.sections.length,
     sections: timelineData.sections.map(section => ({
       title: section.title,
@@ -336,7 +342,10 @@ const CollapseTimeline = ({ markdownContent }) => {
 
   return (
     <div className="timeline-container">
-      <h1 className="timeline-main-title">{timelineData.mainTitle}</h1>
+      <h1 className="timeline-main-title">
+        {timelineData.mainTitle}
+        {timelineData.dateRange && <div className="timeline-date-range">({timelineData.dateRange})</div>}
+      </h1>
       <div className="timeline-credit">
         Content by <a href="https://www.reddit.com/user/HyperSmart_CatLady/" target="_blank" rel="noopener noreferrer">HyperSmart_CatLady</a> {' '}who <a href="https://www.reddit.com/r/conspiracy/comments/1hxz871/predictive_timeline_of_society_collapsing_20252050/" target="_blank" rel="noopener noreferrer">posted this timeline on Reddit</a>. Copy <a href="https://github.com/harryf/collapse-timeline/" target="_blank" rel="noopener noreferrer">this project here</a>.
       </div>
