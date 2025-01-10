@@ -1,0 +1,47 @@
+{
+  "Record-Breaking Storms": "fa-poo-storm",
+  "Heatwaves": "fa-fire-alt",
+  "Flooding": "fa-water",
+  "Arctic Amplification": "fa-icicles",
+  "Crop Failures": "fa-seedling",
+  "Mega-Droughts": "fa-tint-slash",
+  "Coastal Abandonment": "fa-house-flood",
+  "Ecosystem Collapse": "fa-tree",
+
+  "Mass Automation": "fa-robot",
+  "Economic Inequality": "fa-balance-scale",
+  "AI Governance Crisis": "fa-brain",
+  "AI Dominance": "fa-network-wired",
+  "Surveillance Society": "fa-eye",
+  "AI Warfare": "fa-crosshairs",
+  "Tech Dystopia": "fa-microchip",
+
+  "Debt Defaults": "fa-money-bill-wave",
+  "Stock Market Crash": "fa-chart-line",
+  "Resource Wars": "fa-hand-fist",
+  "Housing Market Collapse": "fa-house-damage",
+  "Hyperinflation": "fa-money-bill",
+  "Global Recession": "fa-globe",
+  "Insurance Market Collapse": "fa-house-circle-exclamation",
+  "Financial Fragmentation": "fa-landmark",
+
+  "Urban Protests": "fa-people-group",
+  "Migrant Crises": "fa-person-walking",
+  "Localized Collapse": "fa-skull",
+  "Authoritarianism Rises": "fa-gavel",
+  "Mass Displacement": "fa-person-walking-arrow-right",
+  "Civil Unrest": "fa-people-carry",
+  "Failed States": "fa-ban",
+  "Food System Breakdown": "fa-wheat-awn",
+
+  "Sea-Level Rise": "fa-water",
+  "Desertification": "fa-sun",
+  "Climate Refugees": "fa-people-group",
+  "Singularity Approaches": "fa-robot",
+  "Cyber-Dependency": "fa-code-branch",
+  "Localized Recovery": "fa-leaf",
+  "End of Globalization": "fa-earth-americas",
+  "Social Stratification": "fa-user-lock",
+
+  "default": "fa-skull-crossbones"
+}

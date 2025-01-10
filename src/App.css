@@ -1,0 +1,207 @@
+.App {
+  text-align: center;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #2c2c2c 0%, #111 60%, #000 100%);
+  color: #f2f2f2;
+  padding: 20px;
+  font-family: 'Oswald', sans-serif;
+}
+
+.collapse-timeline h1 {
+  color: #ff1744;
+  margin-bottom: 40px;
+  font-size: 3rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(255, 23, 68, 0.5);
+}
+
+.timeline-section-title {
+  color: #ff1744;
+  margin: 40px 0 20px 0;
+  font-size: 2rem;
+  text-transform: uppercase;
+}
+
+.timeline-theme-title {
+  color: #e91e63;
+  margin: 20px 0 10px 0;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+}
+
+.vertical-timeline-element-title {
+  color: #fff;
+  margin-bottom: 10px;
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+}
+
+.vertical-timeline-element-content {
+  background-color: #2a2a2a;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  border: 1px solid #444;
+}
+
+.vertical-timeline-element-content p {
+  color: #ccc;
+  line-height: 1.6;
+}
+
+.vertical-timeline-element-date {
+  color: #ff4081;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(255, 64, 129, 0.3);
+}
+
+.vertical-timeline::before {
+  background: #ff1744;
+  width: 3px;
+  box-shadow: 0 0 10px rgba(255, 23, 68, 0.5);
+}
+
+.vertical-timeline-element-icon {
+  box-shadow: 0 0 10px 2px #ff4081;
+}
+
+/* Timeline Animations */
+.vertical-timeline-element {
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.vertical-timeline-element--section {
+  transition-delay: 0.2s;
+}
+
+.vertical-timeline-element--theme {
+  transition-delay: 0.3s;
+}
+
+.vertical-timeline-element--item {
+  transition-delay: 0.4s;
+}
+
+.vertical-timeline-element.vertical-timeline-element--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Enhance timeline visuals */
+.vertical-timeline::before {
+  background: linear-gradient(to bottom, 
+    rgba(85, 85, 85, 0.2),
+    rgba(85, 85, 85, 0.8),
+    rgba(85, 85, 85, 0.2)
+  );
+}
+
+.vertical-timeline-element-content {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.vertical-timeline-element-content:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.vertical-timeline-element-icon {
+  box-shadow: 0 0 0 4px #333, inset 0 2px 0 rgba(0, 0, 0, 0.08), 0 3px 0 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.vertical-timeline-element-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Timeline Headers */
+.timeline-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.timeline-main-title {
+  text-align: center;
+  color: #fff;
+  font-size: 2.5em;
+  margin-bottom: 1.5em;
+  font-family: 'Oswald', sans-serif;
+}
+
+.timeline-section-header {
+  margin: 40px 0 20px;
+  padding: 1em;
+  background: rgba(33, 33, 33, 0.8);
+  border-radius: 8px;
+}
+
+.timeline-section-title {
+  color: #ff1744;
+  font-size: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+  font-family: 'Oswald', sans-serif;
+  text-align: center;
+}
+
+.timeline-theme-header {
+  margin: 20px 0 10px;
+  padding: 0.75em;
+  background: rgba(66, 66, 66, 0.8);
+  border-radius: 6px;
+}
+
+.timeline-theme-title {
+  color: #e91e63;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  margin: 0;
+  font-family: 'Oswald', sans-serif;
+  text-align: center;
+}
+
+/* Timeline Elements */
+.vertical-timeline-element--item {
+  margin: 2em 0;
+}
+
+.vertical-timeline-element-subtitle {
+  color: #ddd;
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
+}
+
+.vertical-timeline-element-content p {
+  color: #bbb;
+  line-height: 1.6;
+}
+
+.vertical-timeline-element-date {
+  color: #888 !important;
+  font-weight: bold;
+}
+
+.timeline-credit {
+  text-align: center;
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 2em;
+}
+
+.timeline-credit a {
+  color: #888;
+  text-decoration: none;
+  border-bottom: 1px dotted #888;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.timeline-credit a:hover {
+  color: #e91e63;
+  border-color: #e91e63;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&display=swap');
