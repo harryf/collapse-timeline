@@ -396,6 +396,9 @@ function CollapseTimeline({ markdownContent }) {
       </h1>
       <div className="timeline-credit">
         Content by <a href="https://www.reddit.com/user/HyperSmart_CatLady/" target="_blank" rel="noopener noreferrer">HyperSmart_CatLady</a> {' '}who <a href="https://www.reddit.com/r/conspiracy/comments/1hxz871/predictive_timeline_of_society_collapsing_20252050/" target="_blank" rel="noopener noreferrer">posted this timeline on Reddit</a>. Copy <a href="https://github.com/harryf/collapse-timeline/" target="_blank" rel="noopener noreferrer">this project here</a>.
+        <div className="quote-section">
+          <p><i>&quot;I think the Apocalypse is round the corner and it's going to be great&quot;</i> - <a href="https://en.wikipedia.org/wiki/Alan_Moore" target="_blank" rel="noopener noreferrer">Alan Moore</a> - <a href="https://www.youtube.com/watch?v=cBc71ROdGxU" target="_blank" rel="noopener noreferrer"><Icon path={mdiIcons.mdiPlayCircle} size={0.7} /> Watch Video</a></p>
+        </div>
       </div>
       <VerticalTimeline
         className="vertical-timeline-custom-line"
