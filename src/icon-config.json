@@ -1,0 +1,53 @@
+{
+  "themes": {
+    "Weather and Climate": "bolt",
+    "AI and Technological Disruption": "robot",
+    "Economic Crises": "chart-line",
+    "Societal and Systemic Collapse": "fire"
+  },
+  "bullets": {
+    "Record-Breaking Storms": "poo-storm",
+    "Heatwaves": "fire-alt",
+    "Flooding": "water",
+    "Arctic Amplification": "icicles",
+    "Crop Failures": "seedling",
+    "Mega-Droughts": "tint-slash",
+    "Coastal Abandonment": "house",
+    "Ecosystem Collapse": "tree",
+    "Mass Automation": "robot",
+    "Economic Inequality": "balance-scale",
+    "AI Governance Crisis": "brain",
+    "AI Dominance": "network-wired",
+    "Surveillance Society": "eye",
+    "AI Warfare": "crosshairs",
+    "Tech Dystopia": "microchip",
+    "Debt Defaults": "money-bill-wave",
+    "Stock Market Crash": "chart-line",
+    "Resource Wars": "hand-fist",
+    "Housing Market Collapse": "house",
+    "Hyperinflation": "money-bill",
+    "Global Recession": "globe",
+    "Insurance Market Collapse": "house",
+    "Financial Fragmentation": "landmark",
+    "Urban Protests": "people-group",
+    "Migrant Crises": "person-walking",
+    "Localized Collapse": "skull",
+    "Authoritarianism Rises": "gavel",
+    "Mass Displacement": "person-walking",
+    "Civil Unrest": "people-group",
+    "Failed States": "ban",
+    "Food System Breakdown": "wheat-awn",
+    "Sea-Level Rise": "water",
+    "Desertification": "sun",
+    "Climate Refugees": "people-group",
+    "Singularity Approaches": "robot",
+    "Cyber-Dependency": "code-branch",
+    "Localized Recovery": "leaf",
+    "End of Globalization": "earth-americas",
+    "Social Stratification": "user-lock"
+  },
+  "defaults": {
+    "theme": "skull-crossbones",
+    "bullet": "circle-info"
+  }
+}

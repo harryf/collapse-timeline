@@ -2,46 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faBolt,
-  faRobot,
-  faChartLine,
-  faFire,
-  faSkullCrossbones,
-  faPooStorm,
-  faFireAlt,
-  faWater,
-  faIcicles,
-  faSeedling,
-  faTintSlash,
-  faHouse,
-  faTree,
-  faBrain,
-  faNetworkWired,
-  faEye,
-  faCrosshairs,
-  faMicrochip,
-  faMoneyBillWave,
-  faHandFist,
-  faGlobe,
-  faLandmark,
-  faPeopleGroup,
-  faPersonWalking,
-  faSkull,
-  faGavel,
-  faBan,
-  faLeaf,
-  faEarthAmericas,
-  faUserLock,
-  faBalanceScale,
-  faCodeBranch,
-  faSun,
-  faCalendarDays,
-  faCircleInfo
-} from '@fortawesome/free-solid-svg-icons';
+import * as Icons from '@fortawesome/free-solid-svg-icons';
 import { marked } from 'marked';
-import iconMapping from '../icon-mapping.json';
-import bulletIconMapping from '../bullet-icon-mapping.json';
+import iconConfig from '../icon-config.json';
 
 // Configure marked to open links in new tabs
 marked.use({
@@ -52,45 +15,47 @@ marked.use({
   }
 });
 
-const THEME_ICONS = {
-  'fa-bolt': faBolt,
-  'fa-robot': faRobot,
-  'fa-chart-line': faChartLine,
-  'fa-fire': faFire,
-  'fa-skull-crossbones': faSkullCrossbones
+const getIcon = (name) => {
+  // Convert name to camelCase fa-icon-name -> faIconName
+  const iconName = 'fa' + name.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
+  return Icons[iconName] || Icons[`fa${iconConfig.defaults.bullet.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('')}`];
 };
 
-const BULLET_ICONS = {
-  'fa-poo-storm': faPooStorm,
-  'fa-fire-alt': faFireAlt,
-  'fa-water': faWater,
-  'fa-icicles': faIcicles,
-  'fa-seedling': faSeedling,
-  'fa-tint-slash': faTintSlash,
-  'fa-house': faHouse,
-  'fa-tree': faTree,
-  'fa-brain': faBrain,
-  'fa-network-wired': faNetworkWired,
-  'fa-eye': faEye,
-  'fa-crosshairs': faCrosshairs,
-  'fa-microchip': faMicrochip,
-  'fa-money-bill-wave': faMoneyBillWave,
-  'fa-hand-fist': faHandFist,
-  'fa-globe': faGlobe,
-  'fa-landmark': faLandmark,
-  'fa-people-group': faPeopleGroup,
-  'fa-person-walking': faPersonWalking,
-  'fa-skull': faSkull,
-  'fa-gavel': faGavel,
-  'fa-ban': faBan,
-  'fa-leaf': faLeaf,
-  'fa-earth-americas': faEarthAmericas,
-  'fa-user-lock': faUserLock,
-  'fa-balance-scale': faBalanceScale,
-  'fa-code-branch': faCodeBranch,
-  'fa-sun': faSun,
-  'fa-skull-crossbones': faSkullCrossbones
+const pickThemeIcon = (themeTitle) => {
+  const baseMatch = themeTitle.match(/^[^(]+/) || [themeTitle];
+  const baseKey = baseMatch[0].trim();
+  const iconName = iconConfig.themes[baseKey] || iconConfig.defaults.theme;
+  console.log(' Theme Icon:', { theme: baseKey, icon: iconName });
+  return getIcon(iconName);
 };
+
+const pickBulletIcon = (bulletTitle) => {
+  if (!bulletTitle) return null;
+  
+  // Try exact match first
+  if (iconConfig.bullets[bulletTitle]) {
+    const iconName = iconConfig.bullets[bulletTitle];
+    console.log(' Bullet Icon (exact match):', { title: bulletTitle, icon: iconName });
+    return getIcon(iconName);
+  }
+
+  // Try partial match
+  for (const [key, value] of Object.entries(iconConfig.bullets)) {
+    if (bulletTitle.includes(key)) {
+      console.log(' Bullet Icon (partial match):', { title: bulletTitle, matchedKey: key, icon: value });
+      return getIcon(value);
+    }
+  }
+
+  console.log(' No bullet icon found for:', bulletTitle);
+  return getIcon(iconConfig.defaults.bullet);
+};
+
+// getIconForTheme is now just an alias for pickThemeIcon for backward compatibility
+const getIconForTheme = pickThemeIcon;
+
+// getIconForBullet is now just an alias for pickBulletIcon for backward compatibility
+const getIconForBullet = pickBulletIcon;
 
 const parseMarkdown = (markdown) => {
   console.group('Parsing Markdown');
@@ -214,64 +179,6 @@ const parseMarkdown = (markdown) => {
   console.log('📊 Final Structure:', stats);
   console.groupEnd();
   return timelineData;
-};
-
-const pickThemeIcon = (themeTitle) => {
-  const baseMatch = themeTitle.match(/^[^(]+/) || [themeTitle];
-  const baseKey = baseMatch[0].trim();
-  const iconKey = iconMapping[baseKey] || iconMapping['default'];
-  console.log(' Theme Icon:', { theme: baseKey, icon: iconKey });
-  return THEME_ICONS[iconKey];
-};
-
-const pickBulletIcon = (bulletTitle) => {
-  if (!bulletTitle) return null;
-  
-  // Try exact match first
-  if (bulletIconMapping[bulletTitle]) {
-    console.log(' Bullet Icon (exact match):', { title: bulletTitle, icon: bulletIconMapping[bulletTitle] });
-    return BULLET_ICONS[bulletIconMapping[bulletTitle]];
-  }
-
-  // Try partial match
-  for (const [key, value] of Object.entries(bulletIconMapping)) {
-    if (bulletTitle.includes(key)) {
-      console.log(' Bullet Icon (partial match):', { title: bulletTitle, matchedKey: key, icon: value });
-      return BULLET_ICONS[value];
-    }
-  }
-
-  console.log(' No bullet icon found for:', bulletTitle);
-  return null;
-};
-
-const getIconForTheme = (themeTitle) => {
-  const baseMatch = themeTitle.match(/^[^(]+/) || [themeTitle];
-  const baseKey = baseMatch[0].trim();
-  const iconKey = iconMapping[baseKey] || iconMapping['default'];
-  console.log(' Theme Icon:', { theme: baseKey, icon: iconKey });
-  return THEME_ICONS[iconKey];
-};
-
-const getIconForBullet = (bulletTitle) => {
-  if (!bulletTitle) return null;
-  
-  // Try exact match first
-  if (bulletIconMapping[bulletTitle]) {
-    console.log(' Bullet Icon (exact match):', { title: bulletTitle, icon: bulletIconMapping[bulletTitle] });
-    return BULLET_ICONS[bulletIconMapping[bulletTitle]];
-  }
-
-  // Try partial match
-  for (const [key, value] of Object.entries(bulletIconMapping)) {
-    if (bulletTitle.includes(key)) {
-      console.log(' Bullet Icon (partial match):', { title: bulletTitle, matchedKey: key, icon: value });
-      return BULLET_ICONS[value];
-    }
-  }
-
-  console.log(' No bullet icon found for:', bulletTitle);
-  return null;
 };
 
 const toFileName = (str) => {
@@ -411,7 +318,7 @@ function CollapseTimeline({ markdownContent }) {
           <h2 className="timeline-section-title">
             {section.title}
           </h2>
-          <FontAwesomeIcon icon={faCircleInfo} className="info-icon" />
+          <FontAwesomeIcon icon={Icons.faCircleInfo} className="info-icon" />
         </div>
       );
 
@@ -428,7 +335,7 @@ function CollapseTimeline({ markdownContent }) {
             <h3 className="timeline-theme-title">
               {theme.title}
             </h3>
-            <FontAwesomeIcon icon={faCircleInfo} className="info-icon" />
+            <FontAwesomeIcon icon={Icons.faCircleInfo} className="info-icon" />
           </div>
         );
 
@@ -464,7 +371,7 @@ function CollapseTimeline({ markdownContent }) {
                   minHeight: '80px'
                 }}
               >
-                <FontAwesomeIcon icon={faCircleInfo} className="info-icon" />
+                <FontAwesomeIcon icon={Icons.faCircleInfo} className="info-icon" />
                 {item.title && (
                   <h4 className="vertical-timeline-element-subtitle">
                     {item.title}
