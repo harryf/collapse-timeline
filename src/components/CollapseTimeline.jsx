@@ -36,11 +36,21 @@ import {
   faBalanceScale,
   faCodeBranch,
   faSun,
-  faCalendarDays
+  faCalendarDays,
+  faCircleInfo
 } from '@fortawesome/free-solid-svg-icons';
 import { marked } from 'marked';
 import iconMapping from '../icon-mapping.json';
 import bulletIconMapping from '../bullet-icon-mapping.json';
+
+// Configure marked to open links in new tabs
+marked.use({
+  renderer: {
+    link(href, title, text) {
+      return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title || ''}">${text}</a>`;
+    }
+  }
+});
 
 const THEME_ICONS = {
   'fa-bolt': faBolt,
@@ -269,8 +279,112 @@ const getIconForBullet = (bulletTitle) => {
   return null;
 };
 
-const CollapseTimeline = ({ markdownContent }) => {
+const toFileName = (str) => {
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+};
+
+const makeFileName = (sectionTitle, themeTitle) => {
+  const safeSection = toFileName(sectionTitle);
+  const safeTheme = toFileName(themeTitle);
+  return `${safeSection}__${safeTheme}.md`;
+};
+
+const Modal = ({ content, title, dateRange, icon, onClose }) => {
+  if (!title) return null;
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <button className="modal-close clickable" onClick={onClose}>×</button>
+        {icon && (
+          <div className="modal-icon">
+            <FontAwesomeIcon icon={icon} />
+          </div>
+        )}
+        <h2 className="modal-title">
+          {title}
+          {dateRange && <span className="modal-date-range">({dateRange})</span>}
+        </h2>
+        <div className={`modal-body ${!content ? 'empty' : ''}`}>
+          {content ? (
+            <div dangerouslySetInnerHTML={{ __html: marked(content) }} />
+          ) : (
+            <p>Coming soon...</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+function CollapseTimeline({ markdownContent }) {
   const [timelineData, setTimelineData] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalDateRange, setModalDateRange] = useState('');
+  const [modalIcon, setModalIcon] = useState(null);
+
+  const handleThemeClick = async (sectionTitle, themeTitle) => {
+    const fileName = makeFileName(sectionTitle, themeTitle);
+    try {
+      const res = await fetch(`${process.env.PUBLIC_URL}/content/${fileName}`);
+      const contentType = res.headers.get('content-type');
+      if (!res.ok || !contentType?.includes('text/markdown')) {
+        throw new Error('Not found or invalid content type');
+      }
+      const content = await res.text();
+      setModalContent(content || '');
+    } catch (err) {
+      console.log('No content found:', err.message);
+      setModalContent('');
+    }
+    setModalTitle(themeTitle);
+    setModalDateRange(themeTitle.match(/\((.*?)\)/)?.[1] || '');
+    setModalOpen(true);
+  };
+
+  const handleSectionClick = async (sectionTitle) => {
+    const fileName = makeFileName(sectionTitle, '');
+    try {
+      const res = await fetch(`${process.env.PUBLIC_URL}/content/${fileName}`);
+      const contentType = res.headers.get('content-type');
+      if (!res.ok || !contentType?.includes('text/markdown')) {
+        throw new Error('Not found or invalid content type');
+      }
+      const content = await res.text();
+      setModalContent(content || '');
+    } catch (err) {
+      console.log('No content found:', err.message);
+      setModalContent('');
+    }
+    setModalTitle(sectionTitle);
+    setModalDateRange(sectionTitle.match(/\((.*?)\)/)?.[1] || '');
+    setModalOpen(true);
+  };
+
+  const handleItemClick = async (sectionTitle, themeTitle, itemTitle) => {
+    const fileName = makeFileName(`${sectionTitle}_${themeTitle}`, itemTitle);
+    const bulletIcon = getIconForBullet(itemTitle) || getIconForTheme(themeTitle);
+    try {
+      const res = await fetch(`${process.env.PUBLIC_URL}/content/${fileName}`);
+      const contentType = res.headers.get('content-type');
+      if (!res.ok || !contentType?.includes('text/markdown')) {
+        throw new Error('Not found or invalid content type');
+      }
+      const content = await res.text();
+      setModalContent(content || '');
+    } catch (err) {
+      console.log('No content found:', err.message);
+      setModalContent('');
+    }
+    setModalTitle(itemTitle);
+    setModalIcon(bulletIcon);
+    setModalDateRange(themeTitle.match(/\((.*?)\)/)?.[1] || '');
+    setModalOpen(true);
+  };
 
   useEffect(() => {
     if (markdownContent) {
@@ -281,6 +395,23 @@ const CollapseTimeline = ({ markdownContent }) => {
       console.groupEnd();
     }
   }, [markdownContent]);
+
+  useEffect(() => {
+    if (timelineData) {
+      console.group('Timeline Icons');
+      timelineData.sections.forEach(section => {
+        section.themes.forEach(theme => {
+          console.log(' Theme Icon:', { theme: theme.title, icon: pickThemeIcon(theme.title) });
+          theme.items.forEach(item => {
+            if (item.title) {
+              console.log(' Bullet Icon (exact match):', { title: item.title, icon: pickBulletIcon(item.title) });
+            }
+          });
+        });
+      });
+      console.groupEnd();
+    }
+  }, [timelineData]);
 
   if (!timelineData) {
     console.log(' Timeline data not ready');
@@ -294,8 +425,15 @@ const CollapseTimeline = ({ markdownContent }) => {
     timelineData.sections.forEach((section, sectionIndex) => {
       // Add section header as a regular heading
       elements.push(
-        <div key={`section-${sectionIndex}`} className="timeline-section-header">
-          <h2 className="timeline-section-title">{section.title}</h2>
+        <div 
+          key={`section-${sectionIndex}`} 
+          className="timeline-section-header clickable"
+          onClick={() => handleSectionClick(section.title)}
+        >
+          <h2 className="timeline-section-title">
+            {section.title}
+          </h2>
+          <FontAwesomeIcon icon={faCircleInfo} className="info-icon" />
         </div>
       );
 
@@ -304,33 +442,58 @@ const CollapseTimeline = ({ markdownContent }) => {
         
         // Add theme header as a regular heading
         elements.push(
-          <div key={`theme-${sectionIndex}-${themeIndex}`} className="timeline-theme-header">
-            <h3 className="timeline-theme-title">{theme.title}</h3>
+          <div 
+            key={`theme-${sectionIndex}-${themeIndex}`} 
+            className="timeline-theme-header clickable"
+            onClick={() => handleThemeClick(section.title, theme.title)}
+          >
+            <h3 className="timeline-theme-title">
+              {theme.title}
+            </h3>
+            <FontAwesomeIcon icon={faCircleInfo} className="info-icon" />
           </div>
         );
 
         // Add theme items as timeline elements
         theme.items.forEach((item, itemIndex) => {
           const bulletIcon = getIconForBullet(item.title || item.description) || themeIcon;
+          const backgroundColor = itemIndex % 2 === 0 ? 'rgb(45,45,45)' : 'rgb(55,55,55)';
           elements.push(
             <VerticalTimelineElement
               key={`item-${sectionIndex}-${themeIndex}-${itemIndex}`}
               className="vertical-timeline-element--item"
               contentStyle={{ 
-                background: itemIndex % 2 === 0 ? 'rgb(45,45,45)' : 'rgb(55,55,55)',
-                color: '#fff' 
+                background: backgroundColor,
+                color: '#fff',
+                padding: 0,
+                position: 'relative'
               }}
               contentArrowStyle={{ 
-                borderRight: `7px solid ${itemIndex % 2 === 0 ? 'rgb(45,45,45)' : 'rgb(55,55,55)'}`
+                borderRight: `7px solid ${backgroundColor}`,
+                borderTop: '7px solid transparent',
+                borderBottom: '7px solid transparent'
               }}
               iconStyle={{ background: 'rgb(45, 45, 45)', color: '#fff' }}
               icon={<FontAwesomeIcon icon={bulletIcon} />}
               date={theme.title.match(/\((.*?)\)/)?.[1] || ''}
             >
-              {item.title && (
-                <h4 className="vertical-timeline-element-subtitle">{item.title}</h4>
-              )}
-              <p>{item.description}</p>
+              <div 
+                onClick={() => handleItemClick(section.title, theme.title, item.title || item.description)}
+                className="clickable"
+                style={{ 
+                  padding: '24px',
+                  position: 'relative',
+                  minHeight: '80px'
+                }}
+              >
+                <FontAwesomeIcon icon={faCircleInfo} className="info-icon" />
+                {item.title && (
+                  <h4 className="vertical-timeline-element-subtitle">
+                    {item.title}
+                  </h4>
+                )}
+                <p>{item.description}</p>
+              </div>
             </VerticalTimelineElement>
           );
         });
@@ -356,6 +519,21 @@ const CollapseTimeline = ({ markdownContent }) => {
       >
         {renderTimelineElements()}
       </VerticalTimeline>
+      {modalOpen && (
+        <Modal
+          content={modalContent}
+          title={modalTitle}
+          dateRange={modalDateRange}
+          icon={modalIcon}
+          onClose={() => {
+            setModalOpen(false);
+            setModalContent('');
+            setModalTitle('');
+            setModalDateRange('');
+            setModalIcon(null);
+          }}
+        />
+      )}
     </div>
   );
 };
