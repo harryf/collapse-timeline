@@ -216,13 +216,8 @@ const parseMarkdown = (markdown) => {
   return timelineData;
 };
 
-const getDateFromText = (text) => {
-  const match = text.match(/\((\d{4}(?:–\d{4})?)\)/);
-  return match ? match[1] : '';
-};
-
 const pickThemeIcon = (themeTitle) => {
-  const baseMatch = themeTitle.match(/^[^\(]+/) || [themeTitle];
+  const baseMatch = themeTitle.match(/^[^(]+/) || [themeTitle];
   const baseKey = baseMatch[0].trim();
   const iconKey = iconMapping[baseKey] || iconMapping['default'];
   console.log(' Theme Icon:', { theme: baseKey, icon: iconKey });
@@ -251,7 +246,7 @@ const pickBulletIcon = (bulletTitle) => {
 };
 
 const getIconForTheme = (themeTitle) => {
-  const baseMatch = themeTitle.match(/^[^\(]+/) || [themeTitle];
+  const baseMatch = themeTitle.match(/^[^(]+/) || [themeTitle];
   const baseKey = baseMatch[0].trim();
   const iconKey = iconMapping[baseKey] || iconMapping['default'];
   console.log(' Theme Icon:', { theme: baseKey, icon: iconKey });
@@ -327,47 +322,30 @@ function CollapseTimeline({ markdownContent }) {
   const [modalDateRange, setModalDateRange] = useState('');
   const [modalIcon, setModalIcon] = useState(null);
 
-  const handleThemeClick = async (sectionTitle, themeTitle) => {
-    const fileName = makeFileName(sectionTitle, themeTitle);
-    try {
-      const res = await fetch(`${process.env.PUBLIC_URL}/content/${fileName}`);
-      const contentType = res.headers.get('content-type');
-      if (!res.ok || !contentType?.includes('text/markdown')) {
-        throw new Error('Not found or invalid content type');
-      }
-      const content = await res.text();
-      setModalContent(content || '');
-    } catch (err) {
-      console.log('No content found:', err.message);
-      setModalContent('');
-    }
-    setModalTitle(themeTitle);
-    setModalDateRange(themeTitle.match(/\((.*?)\)/)?.[1] || '');
-    setModalOpen(true);
-  };
+  const handleContentClick = async (type, sectionTitle, themeTitle = '', itemTitle = '') => {
+    let fileName;
+    let title;
+    let icon = null;
 
-  const handleSectionClick = async (sectionTitle) => {
-    const fileName = makeFileName(sectionTitle, '');
-    try {
-      const res = await fetch(`${process.env.PUBLIC_URL}/content/${fileName}`);
-      const contentType = res.headers.get('content-type');
-      if (!res.ok || !contentType?.includes('text/markdown')) {
-        throw new Error('Not found or invalid content type');
-      }
-      const content = await res.text();
-      setModalContent(content || '');
-    } catch (err) {
-      console.log('No content found:', err.message);
-      setModalContent('');
+    switch (type) {
+      case 'section':
+        fileName = makeFileName(sectionTitle, '');
+        title = sectionTitle;
+        break;
+      case 'theme':
+        fileName = makeFileName(sectionTitle, themeTitle);
+        title = themeTitle;
+        break;
+      case 'item':
+        fileName = makeFileName(`${sectionTitle}_${themeTitle}`, itemTitle);
+        title = itemTitle;
+        icon = getIconForBullet(itemTitle) || getIconForTheme(themeTitle);
+        break;
+      default:
+        console.warn('Unknown content type:', type);
+        return;
     }
-    setModalTitle(sectionTitle);
-    setModalDateRange(sectionTitle.match(/\((.*?)\)/)?.[1] || '');
-    setModalOpen(true);
-  };
 
-  const handleItemClick = async (sectionTitle, themeTitle, itemTitle) => {
-    const fileName = makeFileName(`${sectionTitle}_${themeTitle}`, itemTitle);
-    const bulletIcon = getIconForBullet(itemTitle) || getIconForTheme(themeTitle);
     try {
       const res = await fetch(`${process.env.PUBLIC_URL}/content/${fileName}`);
       const contentType = res.headers.get('content-type');
@@ -380,9 +358,9 @@ function CollapseTimeline({ markdownContent }) {
       console.log('No content found:', err.message);
       setModalContent('');
     }
-    setModalTitle(itemTitle);
-    setModalIcon(bulletIcon);
-    setModalDateRange(themeTitle.match(/\((.*?)\)/)?.[1] || '');
+    setModalTitle(title);
+    setModalDateRange(title.match(/\((.*?)\)/)?.[1] || '');
+    if (icon) setModalIcon(icon);
     setModalOpen(true);
   };
 
@@ -428,7 +406,7 @@ function CollapseTimeline({ markdownContent }) {
         <div 
           key={`section-${sectionIndex}`} 
           className="timeline-section-header clickable"
-          onClick={() => handleSectionClick(section.title)}
+          onClick={() => handleContentClick('section', section.title)}
         >
           <h2 className="timeline-section-title">
             {section.title}
@@ -445,7 +423,7 @@ function CollapseTimeline({ markdownContent }) {
           <div 
             key={`theme-${sectionIndex}-${themeIndex}`} 
             className="timeline-theme-header clickable"
-            onClick={() => handleThemeClick(section.title, theme.title)}
+            onClick={() => handleContentClick('theme', section.title, theme.title)}
           >
             <h3 className="timeline-theme-title">
               {theme.title}
@@ -478,7 +456,7 @@ function CollapseTimeline({ markdownContent }) {
               date={theme.title.match(/\((.*?)\)/)?.[1] || ''}
             >
               <div 
-                onClick={() => handleItemClick(section.title, theme.title, item.title || item.description)}
+                onClick={() => handleContentClick('item', section.title, theme.title, item.title || item.description)}
                 className="clickable"
                 style={{ 
                   padding: '24px',
