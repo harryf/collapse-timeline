@@ -1,0 +1,1 @@
+By 2025–2026, layoffs in sectors like retail, logistics, and customer service reach a critical mass. Protests erupt in areas heavily dependent on these industries (e.g., Rust Belt, rural Midwest) as unemployment rises.
