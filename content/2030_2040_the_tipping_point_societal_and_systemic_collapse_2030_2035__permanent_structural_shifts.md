@@ -1,0 +1,1 @@
+By 2030+, entire economic sectors are reshaped by AI, with some jobs permanently disappearing. Social safety nets strain under long-term unemployment, leading to regional instability and demands for radical reforms.
