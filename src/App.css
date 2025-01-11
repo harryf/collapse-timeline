@@ -295,12 +295,10 @@
   z-index: 1;
 }
 
-.modal-icon {
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  font-size: 24px;
-  color: #e91e63;
+.modal-icon svg {
+  width: 32px;
+  height: 32px;
+  color: #fff;
 }
 
 .modal-title {
@@ -357,12 +355,11 @@
 
 .info-icon {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  font-size: 16px;
-  opacity: 0.4;
-  color: #fff;
-  transition: opacity 0.2s ease;
+  top: 8px;
+  right: 8px;
+  color: rgba(255, 255, 255, 0.5);
+  width: 20px !important;
+  height: 20px !important;
 }
 
 .timeline-section-header:hover .info-icon,
@@ -388,4 +385,14 @@
 .timeline-credit a:hover {
   color: #e91e63;
   border-color: #e91e63;
+}
+
+.vertical-timeline-element-icon svg {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
 }

@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import * as Icons from '@fortawesome/free-solid-svg-icons';
-import { marked } from 'marked';
+import * as mdiIcons from '@mdi/js';
+import Icon from '@mdi/react'; // MDI React component for rendering icons
 import iconConfig from '../icon-config.json';
+import { marked } from 'marked';
+
+const getIcon = (name) => {
+  // Convert name to MDI format mdi-icon-name
+  const iconName = 'mdi' + name.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
+  return mdiIcons[iconName] || mdiIcons[iconConfig.defaults.bullet];
+};
 
 // Configure marked to open links in new tabs
 marked.use({
@@ -14,12 +20,6 @@ marked.use({
     }
   }
 });
-
-const getIcon = (name) => {
-  // Convert name to camelCase fa-icon-name -> faIconName
-  const iconName = 'fa' + name.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
-  return Icons[iconName] || Icons[`fa${iconConfig.defaults.bullet.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('')}`];
-};
 
 const pickThemeIcon = (themeTitle) => {
   const baseMatch = themeTitle.match(/^[^(]+/) || [themeTitle];
@@ -202,7 +202,7 @@ const Modal = ({ content, title, dateRange, icon, onClose }) => {
         <button className="modal-close clickable" onClick={onClose}>×</button>
         {icon && (
           <div className="modal-icon">
-            <FontAwesomeIcon icon={icon} />
+            <Icon path={icon} size={1} />
           </div>
         )}
         <h2 className="modal-title">
@@ -318,7 +318,7 @@ function CollapseTimeline({ markdownContent }) {
           <h2 className="timeline-section-title">
             {section.title}
           </h2>
-          <FontAwesomeIcon icon={Icons.faCircleInfo} className="info-icon" />
+          <Icon path={getIcon('information-outline')} size={1} className="info-icon" />
         </div>
       );
 
@@ -335,7 +335,7 @@ function CollapseTimeline({ markdownContent }) {
             <h3 className="timeline-theme-title">
               {theme.title}
             </h3>
-            <FontAwesomeIcon icon={Icons.faCircleInfo} className="info-icon" />
+            <Icon path={getIcon('information-outline')} size={1} className="info-icon" />
           </div>
         );
 
@@ -359,7 +359,7 @@ function CollapseTimeline({ markdownContent }) {
                 borderBottom: '7px solid transparent'
               }}
               iconStyle={{ background: 'rgb(45, 45, 45)', color: '#fff' }}
-              icon={<FontAwesomeIcon icon={bulletIcon} />}
+              icon={<Icon path={bulletIcon} size={1} />}
               date={theme.title.match(/\((.*?)\)/)?.[1] || ''}
             >
               <div 
@@ -371,7 +371,7 @@ function CollapseTimeline({ markdownContent }) {
                   minHeight: '80px'
                 }}
               >
-                <FontAwesomeIcon icon={Icons.faCircleInfo} className="info-icon" />
+                <Icon path={getIcon('information-outline')} size={1} className="info-icon" />
                 {item.title && (
                   <h4 className="vertical-timeline-element-subtitle">
                     {item.title}
